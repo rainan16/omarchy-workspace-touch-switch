@@ -4,6 +4,8 @@ An [Omarchy](https://omarchy.org) plugin that switches Hyprland workspaces with 
 
 Development status: Tested only on a Microsoft Surface 2.
 
+![Workspace OSD after an edge swipe](preview.png)
+
 ![Edge and two-finger swipes switching workspaces](demo.gif)
 
 ## What it does

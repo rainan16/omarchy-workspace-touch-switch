@@ -1,0 +1,43 @@
+name: Release dry-run
+
+on:
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-dry-run-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install semantic-release
+        run: |
+          npm install --no-package-lock --no-save \
+            semantic-release@24.2.7 \
+            @semantic-release/changelog@6.0.3 \
+            @semantic-release/exec@7.1.0 \
+            @semantic-release/git@10.0.1
+
+      - name: semantic-release dry-run
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          npx semantic-release --dry-run --no-ci
+          --branches main
+          --branches ${{ github.head_ref || github.ref_name }}

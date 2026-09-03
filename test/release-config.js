@@ -11,3 +11,9 @@ test("releaserc releases only main, bumps manifest, and does not publish npm", f
   assert.ok(plugins.indexOf("scripts/bump-manifest.js") !== -1)
   assert.ok(plugins.indexOf("manifest.json") !== -1)
 })
+
+test("release workflow publishes from main CI without dry-run", function () {
+  var yml = fs.readFileSync(".github/workflows/release.yml", "utf8")
+  assert.ok(yml.indexOf("workflow_run") !== -1)
+  assert.ok(/\n        run: npx semantic-release\n/.test(yml))
+})

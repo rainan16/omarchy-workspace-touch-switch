@@ -24,8 +24,7 @@ Plan history: `PLAN.md`, `PLAN-edge-split.md`. Samples: `/usr/share/omarchy/shel
 
 ```bash
 make
-node test/gesture-model.js
-node test/gesture-flow.js
+node --test test/gesture-model.js test/gesture-flow.js
 omarchy plugin validate "$PWD"
 /usr/lib/qt6/bin/qmllint -I "${OMARCHY_PATH:-/usr/share/omarchy}/shell" Service.qml Overlay.qml
 ```
@@ -53,10 +52,10 @@ omarchy restart shell
 
 ## Testing
 
-On every important change: update `README.md` (usage, install, configure, mapping) and update tests. Then run all of them — `make`, `node test/gesture-model.js`, `node test/gesture-flow.js`, `omarchy plugin validate "$PWD"`, and qmllint as above. Do not skip tests because a change “looks small”.
+On every important change: update `README.md` (usage, install, configure, mapping) and update tests. Then run all of them — `make`, `node --test test/gesture-model.js test/gesture-flow.js`, `omarchy plugin validate "$PWD"`, and qmllint as above. Do not skip tests because a change “looks small”.
 
 - C: `make` with `-Wall` and no errors.
-- JS: `node test/gesture-model.js` and `node test/gesture-flow.js`.
+- JS: `node --test test/gesture-model.js test/gesture-flow.js`.
 - Evdev and live Hyprland are not in node tests; swipe on device after `omarchy restart shell`.
 - QML/manifest: `omarchy plugin validate "$PWD"` then qmllint as above.
 - Daemon: only when `"twoFinger": true`. `./touch-gesture-daemon`, swipe, one JSON line then flush.

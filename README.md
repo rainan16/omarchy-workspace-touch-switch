@@ -1,5 +1,7 @@
 # Touch Gestures
 
+[![CI](https://github.com/rainan16/omarchy-workspace-touch-switch/actions/workflows/ci.yml/badge.svg)](https://github.com/rainan16/omarchy-workspace-touch-switch/actions/workflows/ci.yml)
+
 An [Omarchy](https://omarchy.org) plugin that switches Hyprland workspaces with touch swipes, and can show live previews of the workspace you land on.
 
 Development status: Tested only on a Microsoft Surface 2.
@@ -85,7 +87,7 @@ That deletes the plugin. Any `"id": "rainan16.workspace-touch-switch"` entry in 
 
 ## Development
 
-Push and pull request to `main` run GitHub Actions: `make` with gcc and clang, the node tests, and `qmllint` against Omarchy's `quattro` shell (`qs.Commons` / `qs.Ui`). `omarchy plugin validate` still needs a local Omarchy install.
+Push and pull request to `main` run GitHub Actions: `make` with gcc and clang, `node --test` (pass count on the run summary), and `qmllint` against Omarchy's `quattro` shell (`qs.Commons` / `qs.Ui`). `omarchy plugin validate` still needs a local Omarchy install.
 
 Tests, daemon replace (`ETXTBSY`), QML cache, and other gotchas are in [AGENTS.md](AGENTS.md).
 

@@ -89,7 +89,7 @@ That deletes the plugin. Any `"id": "rainan16.workspace-touch-switch"` entry in 
 
 Push and pull request to `main` run GitHub Actions: `make` with gcc and clang, `node --test` (pass count on the run summary), and `qmllint` against Omarchy's `quattro` shell (`qs.Commons` / `qs.Ui`). `omarchy plugin validate` still needs a local Omarchy install.
 
-PRs also dry-run [semantic-release](https://github.com/semantic-release/semantic-release) (`--dry-run`, read-only). That does not tag or publish. Plugin version stays in `manifest.json`. Use Conventional Commits on `main` (`feat:`, `fix:`, `BREAKING CHANGE`) when live releases are enabled; `chore:` does not bump. Do not merge a live publish job until a PR dry-run has been checked.
+PRs dry-run [semantic-release](https://github.com/semantic-release/semantic-release) (`--dry-run`, read-only). After CI passes on `main`, it tags `vX.Y.Z`, writes a GitHub Release, and bumps `manifest.json` (plugin version). Use Conventional Commits (`feat:`, `fix:`, `BREAKING CHANGE`); `chore:` does not bump.
 
 Tests, daemon replace (`ETXTBSY`), QML cache, and other gotchas are in [AGENTS.md](AGENTS.md).
 

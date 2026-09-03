@@ -16,17 +16,17 @@ function handleDaemonLine(line, workspaceName, settings) {
   return handleEvent(GestureModel.parseLine(line), workspaceName, settings)
 }
 
-test("daemon swipe-right shows OSD", function () {
+test("daemon swipe-right shows overlay", function () {
   assert.deepStrictEqual(handleDaemonLine('{"gesture":"swipe-right","direction":"next"}', "1"), {
     request: 'hl.dsp.focus({ workspace = "e-1" })',
-    osd: { icon: "touch", message: "workspace 1", duration: "800" }
+    overlay: { workspace: "1", duration: "1500" }
   })
 })
 
-test("daemon swipe-left shows OSD", function () {
+test("daemon swipe-left shows overlay", function () {
   assert.deepStrictEqual(handleDaemonLine('{"gesture":"swipe-left","direction":"prev"}', "2"), {
     request: 'hl.dsp.focus({ workspace = "e+1" })',
-    osd: { icon: "touch", message: "workspace 2", duration: "800" }
+    overlay: { workspace: "2", duration: "1500" }
   })
 })
 
@@ -34,6 +34,13 @@ test("overlay skips OSD", function () {
   assert.deepStrictEqual(handleDaemonLine('{"gesture":"swipe-right","direction":"next"}', "1", { overlay: true }), {
     request: 'hl.dsp.focus({ workspace = "e-1" })',
     overlay: { workspace: "1", duration: "1500" }
+  })
+})
+
+test("overlay false shows OSD", function () {
+  assert.deepStrictEqual(handleDaemonLine('{"gesture":"swipe-right","direction":"next"}', "1", { overlay: false }), {
+    request: 'hl.dsp.focus({ workspace = "e-1" })',
+    osd: { icon: "touch", message: "workspace 1", duration: "800" }
   })
 })
 
@@ -46,8 +53,18 @@ test("osd false is silent", function () {
   })
 })
 
-test("twoFinger keeps OSD", function () {
+test("twoFinger keeps overlay", function () {
   assert.deepStrictEqual(handleDaemonLine('{"gesture":"swipe-right","direction":"next"}', "1", { twoFinger: true }), {
+    request: 'hl.dsp.focus({ workspace = "e-1" })',
+    overlay: { workspace: "1", duration: "1500" }
+  })
+})
+
+test("twoFinger overlay false shows OSD", function () {
+  assert.deepStrictEqual(handleDaemonLine('{"gesture":"swipe-right","direction":"next"}', "1", {
+    twoFinger: true,
+    overlay: false
+  }), {
     request: 'hl.dsp.focus({ workspace = "e-1" })',
     osd: { icon: "touch", message: "workspace 1", duration: "800" }
   })
@@ -63,22 +80,22 @@ test("twoFinger overlay skips OSD", function () {
   })
 })
 
-test("edge swipe-right shows OSD", function () {
+test("edge swipe-right shows overlay", function () {
   assert.deepStrictEqual(
     handleEvent(GestureModel.classifyEdgeSwipe("left", 20, 200, 500, 500, 1000, 1000), "1"),
     {
       request: 'hl.dsp.focus({ workspace = "e-1" })',
-      osd: { icon: "touch", message: "workspace 1", duration: "800" }
+      overlay: { workspace: "1", duration: "1500" }
     }
   )
 })
 
-test("edge swipe-left shows OSD", function () {
+test("edge swipe-left shows overlay", function () {
   assert.deepStrictEqual(
     handleEvent(GestureModel.classifyEdgeSwipe("right", 980, 800, 500, 500, 1000, 1000), "2"),
     {
       request: 'hl.dsp.focus({ workspace = "e+1" })',
-      osd: { icon: "touch", message: "workspace 2", duration: "800" }
+      overlay: { workspace: "2", duration: "1500" }
     }
   )
 })

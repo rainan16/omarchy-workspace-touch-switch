@@ -15,7 +15,7 @@ Development status: Tested only on a Microsoft Surface Go 2 (SKU 1926, ELAN9038)
 - one finger, left edge, swipe right → previous workspace
 - one finger, right edge, swipe left → next workspace
 - two fingers, horizontal swipe anywhere → same mapping (`"twoFinger": true` only)
-- brief OSD with the workspace name (optional live preview overlay)
+- live workspace preview overlay after a swipe (OSD if overlay is off)
 
 Default one-finger edge swipes use layer-shell strips and do not need the `input` group. Two-finger anywhere is off until you set `"twoFinger": true`. Vertical two-finger moves are ignored.
 
@@ -87,8 +87,8 @@ Configure on the plugin entry in `~/.config/omarchy/shell.json` (hot-reloads on 
 | Setting | Default | |
 | --- | --- | --- |
 | Two-finger swipes | off | Off keeps one-finger edge strips only, with no `input` group and no daemon. `"twoFinger": true` starts the daemon, hides the strips, and enables two-finger swipes anywhere plus one-finger edges. See [Two-finger swipes](#two-finger-swipes). |
-| Live preview overlay | off | `"overlay": true` shows live workspace previews and skips OSD. Preview windows use layout size (`width/scale`) so they fill the card on scaled displays. |
-| OSD | on | The small `󰝁 workspace N` toast after a swipe. `"osd": false` hides it when the overlay is also off. Overlay on always skips OSD. |
+| Live preview overlay | on | Live workspace previews after a swipe; skips OSD. `"overlay": false` turns it off. Preview windows use layout size (`width/scale`) so they fill the card on scaled displays. |
+| OSD | on | The small `󰝁 workspace N` toast after a swipe. Skipped while overlay is on. `"osd": false` hides it when the overlay is also off. |
 
 Optional environment variables for the daemon (used only when `"twoFinger": true`):
 

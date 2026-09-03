@@ -36,7 +36,7 @@ function osdEnabled(settings) {
 }
 
 function overlayEnabled(settings) {
-  return !!(settings && settings.overlay === true)
+  return !settings || settings.overlay !== false
 }
 
 function twoFingerEnabled(settings) {

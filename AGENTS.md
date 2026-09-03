@@ -12,7 +12,7 @@ Gestures (`GestureModel.js` dispatch, same object from strips or daemon JSON):
 
 Default: layer-shell edge strips in `Overlay.qml` (`keepLoaded`). No daemon. No `input` group. `"twoFinger": true` hides strips, starts `touch-gesture-daemon`, and does both one-finger edges and two-finger anywhere. Needs `input`, then re-login. Never run strips and the daemon together.
 
-Overlay: off unless `plugins[]` entry has `"overlay": true`. Then `shell.summon(manifest.id, JSON.stringify(GestureModel.overlayPayload(name)))`. `Overlay.qml` is a separate kind; no UI in `Service.qml`. Live previews via `ScreencopyView` on each workspace toplevel's `wayland` handle. Pass `GestureModel.layoutSize(width, height, scale)` into `windowRect`, not raw IPC pixel size. Edge strips also live here (`visible: !twoFingerEnabled`).
+Overlay: on unless `"overlay": false`. Then `shell.summon(manifest.id, JSON.stringify(GestureModel.overlayPayload(name)))`. `Overlay.qml` is a separate kind; no UI in `Service.qml`. Live previews via `ScreencopyView` on each workspace toplevel's `wayland` handle. Pass `GestureModel.layoutSize(width, height, scale)` into `windowRect`, not raw IPC pixel size. Edge strips also live here (`visible: !twoFingerEnabled`).
 
 OSD: on unless `"osd": false`, and skipped while overlay is on. Then `shell.summon("omarchy.osd", JSON.stringify(GestureModel.osdPayload(name)))`. Name from `Hyprland.focusedWorkspace`. Icon `touch` is OSD glyph `󰝁`. Read the entry via `GestureModel.pluginSettings(shell.shellConfig, manifest.id)`.
 

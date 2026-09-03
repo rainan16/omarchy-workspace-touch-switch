@@ -32,10 +32,45 @@ jobs:
       - name: Build
         run: make CC=${{ matrix.c_compiler }}
 
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
       - name: Test
         run: |
-          node test/gesture-model.js
-          node test/gesture-flow.js
+          node --test --test-reporter spec \
+            --test-reporter-destination stdout \
+            --test-reporter junit \
+            --test-reporter-destination test-results.xml \
+            test/gesture-model.js test/gesture-flow.js
+
+      - name: Publish test summary
+        if: always()
+        run: |
+          node -e '
+            var fs = require("fs")
+            var xml = ""
+            try { xml = fs.readFileSync("test-results.xml", "utf8") } catch (e) {}
+            var n = function (label) {
+              var m = xml.match(new RegExp("<!-- " + label + " (\\d+) -->"))
+              return m ? Number(m[1]) : 0
+            }
+            var tests = n("tests")
+            var passed = n("pass")
+            var failures = n("fail")
+            var line = passed + " passed, " + failures + " failed"
+            if (process.env.GITHUB_STEP_SUMMARY) {
+              fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,
+                "## Tests\n\n**" + passed + " passed**, " + failures + " failed (" + tests + " total)\n")
+            }
+            console.log(failures ? "::error title=Tests::" + line : "::notice title=Tests::" + line)
+            console.log(line)
+          '
 
   qmllint:
     runs-on: ubuntu-latest

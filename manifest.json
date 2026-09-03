@@ -2,12 +2,15 @@
   "schemaVersion": 1,
   "id": "rainan16.workspace-touch-switch",
   "name": "Touch Gestures",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": "rainan16",
   "license": "MIT",
   "homepage": "https://github.com/rainan16/omarchy-workspace-touch-switch",
   "description": "Edge and two-finger swipe gestures for Hyprland workspace switching, with live workspace previews.",
-  "kinds": ["service", "overlay"],
+  "kinds": [
+    "service",
+    "overlay"
+  ],
   "keepLoaded": true,
   "entryPoints": {
     "service": "Service.qml",

@@ -51,8 +51,8 @@ test("osdEnabled", function () {
 })
 
 test("overlayEnabled", function () {
-  assert.strictEqual(GestureModel.overlayEnabled(null), false)
-  assert.strictEqual(GestureModel.overlayEnabled({}), false)
+  assert.strictEqual(GestureModel.overlayEnabled(null), true)
+  assert.strictEqual(GestureModel.overlayEnabled({}), true)
   assert.strictEqual(GestureModel.overlayEnabled({ overlay: true }), true)
   assert.strictEqual(GestureModel.overlayEnabled({ overlay: false }), false)
 })
@@ -120,8 +120,8 @@ test("classifyEdgeSwipe", function () {
 })
 
 test("osdAfterSwipe", function () {
-  assert.strictEqual(GestureModel.osdAfterSwipe(null), true)
-  assert.strictEqual(GestureModel.osdAfterSwipe({}), true)
+  assert.strictEqual(GestureModel.osdAfterSwipe(null), false)
+  assert.strictEqual(GestureModel.osdAfterSwipe({}), false)
   assert.strictEqual(GestureModel.osdAfterSwipe({ overlay: false }), true)
   assert.strictEqual(GestureModel.osdAfterSwipe({ overlay: false, osd: false }), false)
   assert.strictEqual(GestureModel.osdAfterSwipe({ overlay: true, osd: true }), false)

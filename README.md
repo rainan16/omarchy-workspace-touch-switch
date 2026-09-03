@@ -4,7 +4,7 @@
 
 An [Omarchy](https://omarchy.org) plugin that switches Hyprland workspaces with touch swipes, and can show live previews of the workspace you land on.
 
-Development status: Tested only on a Microsoft Surface 2.
+Development status: Tested only on a Microsoft Surface Go 2 (SKU 1926, ELAN9038). Reports from other digitizers welcome.
 
 ![Workspace OSD after an edge swipe](preview.png)
 

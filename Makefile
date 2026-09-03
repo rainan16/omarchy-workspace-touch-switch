@@ -6,7 +6,7 @@ touch-gesture-daemon: touch-gesture-daemon.c
 
 .PHONY: test
 test:
-	node --test test/gesture-model.js test/gesture-flow.js test/bump-manifest.js test/release-config.js
+	node --test test/gesture-model.js test/gesture-flow.js test/bump-manifest.js test/release-config.js test/setup-two-finger.js
 
 clean:
 	rm -f touch-gesture-daemon

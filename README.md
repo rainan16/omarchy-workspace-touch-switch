@@ -27,25 +27,68 @@ Do not run a manual `./touch-gesture-daemon` while the plugin is in two-finger m
 omarchy plugin add https://github.com/rainan16/omarchy-workspace-touch-switch.git --enable
 ```
 
-Then `make` in the plugin directory (the daemon binary is not shipped) and restart the shell. Needs `gcc` and `make`. The `input` group is required only when `"twoFinger": true` (`groups` should list `input`; log out and back in after adding it).
+That is enough for default one-finger edge swipes. Edge strips consume the outer ~4% of screen width; apps do not see those touches.
 
-The daemon reads `/dev/input/event*` but does not grab the device. Hyprland still receives the touch. Edge strips consume the outer ~4% of screen width; apps do not see those touches. The daemon path does not steal them.
+## Two-finger swipes
+
+Off by default. This needs the `input` group, a built daemon, and `"twoFinger": true`.
+
+### Activate
+
+```sh
+~/.config/omarchy/plugins/rainan16.workspace-touch-switch/setup-two-finger.sh
+```
+
+The script installs `jq`/`gcc`/`make` if needed, builds the daemon, adds you to `input` (`sudo usermod`), and sets `"twoFinger": true`. If it asks you to log out, do that, then run the same command again so the group applies before two-finger turns on.
+
+### Deactivate
+
+```sh
+~/.config/omarchy/plugins/rainan16.workspace-touch-switch/uninstall-two-finger.sh
+```
+
+Turns off `"twoFinger"`, deletes the built daemon, and leaves the `input` group in place. Edge strips come back. To remove the plugin itself, see [Remove](#remove).
+
+### Manual steps
+
+1. Add the `input` group and re-login:
+
+   ```sh
+   sudo usermod -aG input "$USER"
+   ```
+
+   Log out and back in. `groups` must list `input`.
+
+2. Build the daemon (not shipped in git). Needs `gcc` and `make` (`omarchy pkg add gcc make` if missing):
+
+   ```sh
+   cd ~/.config/omarchy/plugins/rainan16.workspace-touch-switch
+   make
+   ```
+
+3. Turn it on in `~/.config/omarchy/shell.json` (hot-reloads on save):
+
+   ```json
+   { "id": "rainan16.workspace-touch-switch", "twoFinger": true }
+   ```
+
+The daemon reads `/dev/input/event*` but does not grab the device. Hyprland still receives the touch. The daemon path does not steal the edge band.
+
+If `"twoFinger": true` without `input`, the daemon logs `cannot open` and does not restart-storm. A toast says `Touch error: twoFinger mode without 'input' group`. Journal tells you to disable twoFinger, or add the input group and re-login. Edge strips are hidden too, so there are no gestures until you turn two-finger off.
 
 ## Settings
 
 Configure on the plugin entry in `~/.config/omarchy/shell.json` (hot-reloads on save):
 
 ```json
-{ "id": "rainan16.workspace-touch-switch", "twoFinger": true }
+{ "id": "rainan16.workspace-touch-switch" }
 ```
 
 | Setting | Default | |
 | --- | --- | --- |
-| Two-finger swipes | off | Off keeps one-finger edge strips only, with no `input` group and no daemon. `"twoFinger": true` starts the daemon, hides the strips, and enables two-finger swipes anywhere plus one-finger edges. Needs `input`, then re-login. |
+| Two-finger swipes | off | Off keeps one-finger edge strips only, with no `input` group and no daemon. `"twoFinger": true` starts the daemon, hides the strips, and enables two-finger swipes anywhere plus one-finger edges. See [Two-finger swipes](#two-finger-swipes). |
 | Live preview overlay | off | `"overlay": true` shows live workspace previews and skips OSD. Preview windows use layout size (`width/scale`) so they fill the card on scaled displays. |
 | OSD | on | The small `󰝁 workspace N` toast after a swipe. `"osd": false` hides it when the overlay is also off. Overlay on always skips OSD. |
-
-If `"twoFinger": true` without `input`, the daemon logs `cannot open` and does not restart-storm. A toast says `Touch error: twoFinger mode without 'input' group`. Journal tells you to disable twoFinger, or add the input group and re-login. Edge strips are hidden too, so there are no gestures until you turn two-finger off.
 
 Optional environment variables for the daemon (used only when `"twoFinger": true`):
 
@@ -79,11 +122,14 @@ journalctl --user -f | grep touch-gestures
 
 ## Remove
 
+Turn off two-finger first if you enabled it:
+
 ```sh
+~/.config/omarchy/plugins/rainan16.workspace-touch-switch/uninstall-two-finger.sh
 omarchy plugin remove rainan16.workspace-touch-switch
 ```
 
-That deletes the plugin. Any `"id": "rainan16.workspace-touch-switch"` entry in `~/.config/omarchy/shell.json` is yours to remove.
+`omarchy plugin remove` deletes the plugin. Any leftover `"id": "rainan16.workspace-touch-switch"` entry in `~/.config/omarchy/shell.json` is yours to remove. The `input` group is left in place.
 
 ## Development
 

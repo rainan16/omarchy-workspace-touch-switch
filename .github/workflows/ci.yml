@@ -48,7 +48,7 @@ jobs:
             --test-reporter junit \
             --test-reporter-destination test-results.xml \
             test/gesture-model.js test/gesture-flow.js \
-            test/bump-manifest.js test/release-config.js
+            test/bump-manifest.js test/release-config.js test/setup-two-finger.js
 
       - name: Publish test summary
         if: always()

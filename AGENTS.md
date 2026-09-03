@@ -24,7 +24,7 @@ Plan history: `PLAN.md`, `PLAN-edge-split.md`. Samples: `/usr/share/omarchy/shel
 
 ```bash
 make
-node --test test/gesture-model.js test/gesture-flow.js
+node --test test/gesture-model.js test/gesture-flow.js test/setup-two-finger.js
 omarchy plugin validate "$PWD"
 /usr/lib/qt6/bin/qmllint -I "${OMARCHY_PATH:-/usr/share/omarchy}/shell" Service.qml Overlay.qml
 ```
@@ -52,10 +52,10 @@ omarchy restart shell
 
 ## Testing
 
-On every important change: update `README.md` (usage, install, configure, mapping) and update tests. Then run all of them — `make`, `node --test test/gesture-model.js test/gesture-flow.js`, `omarchy plugin validate "$PWD"`, and qmllint as above. Do not skip tests because a change “looks small”.
+On every important change: update `README.md` (usage, install, configure, mapping) and update tests. Then run all of them — `make`, `node --test test/gesture-model.js test/gesture-flow.js test/setup-two-finger.js`, `omarchy plugin validate "$PWD"`, and qmllint as above. Do not skip tests because a change “looks small”.
 
 - C: `make` with `-Wall` and no errors.
-- JS: `node --test test/gesture-model.js test/gesture-flow.js`.
+- JS: `node --test test/gesture-model.js test/gesture-flow.js test/setup-two-finger.js`.
 - Evdev and live Hyprland are not in node tests; swipe on device after `omarchy restart shell`.
 - QML/manifest: `omarchy plugin validate "$PWD"` then qmllint as above.
 - Daemon: only when `"twoFinger": true`. `./touch-gesture-daemon`, swipe, one JSON line then flush.
@@ -106,13 +106,14 @@ C daemon:
 - Discovery `open()` on `/dev/input/event*` without `input` group looks like “no touchscreen”. Sysfs scan still finds ELAN9038; the real error is `Permission denied` on open. Default path does not open `/dev/input`.
 - `TOUCHSCREEN_DEVICE` overrides discovery. Env `EDGE_RATIO` (default 0.04) and `SWIPE_RATIO` (default 0.08) override daemon thresholds. Strips use the same ratios in `GestureModel.edgeWidth` / `swipeMin`.
 - Do not grab the device. Two readers (manual `./touch-gesture-daemon` and the plugin in two-finger mode) both see events; kill the manual one before testing the desktop.
+- End-user README Install is only `omarchy plugin add … --enable`. Official add clones, validates, rescans, and enables. Do not put `make`, gcc, `omarchy restart shell`, or the `input` group there. Default path is QML strips. `make` (daemon is gitignored) and `input` then re-login belong under `"twoFinger": true` only (`setup-two-finger.sh` or the README manual steps). Restart after QML/JS is a local-dev cache issue, not first install. `plugin add` must not run that script.
 - Strips consume the edge band (~4% of width). The daemon path does not. Without `input` and two-finger on: daemon logs `cannot open`, one-finger also gone until twoFinger is turned off.
 - `Hyprland.focusedMonitor.width/height` are physical pixels. Client `at`/`size` and monitor `x`/`y` are layout. `windowRect` needs `width/scale` and `height/scale`. Scale 1 hides half-size previews stuck in the card's top-left.
 
 ## Security
 
 - Plugins run unsandboxed inside `omarchy-shell` with the user’s permissions.
-- Never `EVIOCGRAB`. Never commit secrets. Do not add sudo, install hooks, or a second Quickshell process.
+- Never `EVIOCGRAB`. Never commit secrets. Do not add install hooks or a second Quickshell process. Plugin runtime must not sudo. `setup-two-finger.sh` is user-invoked only and may sudo solely for `usermod -aG input`. `uninstall-two-finger.sh` is user-invoked, does not sudo, does not drop `input`, and does not run `omarchy plugin remove`.
 
 ## Boundaries
 
@@ -122,4 +123,4 @@ Never:
 - Put UI (`Rectangle`, `PanelWindow`, `NotificationWindow`) in `Service.qml`. Overlay UI lives in `Overlay.qml`.
 - Use `omarchy-notification-send` for workspace switches. This is overlay/OSD.
 - Use `Qt.createQmlObject` for `Process`.
-- Ship only a prebuilt binary. `make` is an install step; the binary is gitignored.
+- Ship only a prebuilt binary. The binary is gitignored. `make` is a twoFinger and local-dev step, not default end-user install.
